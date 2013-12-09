@@ -28,7 +28,7 @@ function command-all-nodes
 {
 $command = $args
 $command = [Scriptblock]::Create($command)
-$servers = import-csv C:\etc\hosts.txt
+$servers = import-csv C:\etc\hosts.csv
 write-host $servers
      foreach ($server in $servers)
      {
