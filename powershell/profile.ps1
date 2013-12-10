@@ -38,4 +38,28 @@ write-host $servers
           write-host "--------------- Trying command $command"
           invoke-command -scriptblock $command -ComputerName $targetip
      }
-} 
+}
+#Can be used to generate a random pass.  usage GET-Temppassword –length 19 –sourcedata $alphabet
+Function GET-Temppassword() {
+
+Param(
+
+[int]$length=10,
+
+[string[]]$sourcedata
+
+)
+
+ 
+
+For ($loop=1; $loop –le $length; $loop++) {
+
+            $TempPassword+=($sourcedata | GET-RANDOM)
+
+            }
+
+return $TempPassword
+
+}
+$ascii=$NULL;For ($a=33;$a –le 126;$a++) {$ascii+=,[char][byte]$a }
+$alphabet=$NULL;For ($a=65;$a –le 90;$a++) {$alphabet+=,[char][byte]$a } 
