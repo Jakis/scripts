@@ -62,4 +62,23 @@ return $TempPassword
 
 }
 $ascii=$NULL;For ($a=33;$a –le 126;$a++) {$ascii+=,[char][byte]$a }
-$alphabet=$NULL;For ($a=65;$a –le 90;$a++) {$alphabet+=,[char][byte]$a } 
+$alphabet=$NULL;For ($a=65;$a –le 90;$a++) {$alphabet+=,[char][byte]$a }
+function update-nagios-config
+{
+	#Gather the servers found in /etc/hosts.csv and append the ip to $calcservers
+	$calcservers = @()
+	$a = import-csv C:\etc\hosts.csv
+	foreach ($server in $a){
+	$calcservers += $server.ip
+	}
+
+	#Itereate through this array to copy the NSC config from deploy.
+	foreach ($server in $calcservers){
+	Copy-item -force 'C:\Configs\nagios\NSC.ini' "\\$($server)\c$\Program Files\NSClient++"
+	write-host "Copying NSC.ini from deploy to $($server)."
+	write-host "Restarting Nagios Agent."
+	Invoke-Command {stop-service nscp} -Computername $server
+	Invoke-Command {start-service nscp} -Computername $server
+	Invoke-Command {get-service nscp} -Computername $server
+	}
+} 
